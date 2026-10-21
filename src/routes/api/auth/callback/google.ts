@@ -7,6 +7,13 @@ type GoogleTokenResponse = {
   error?: string;
 };
 
+function redirectResponse(url: URL) {
+  return new Response(null, {
+    status: 302,
+    headers: { Location: url.toString() },
+  });
+}
+
 export const Route = createFileRoute("/api/auth/callback/google")({
   server: {
     handlers: {
@@ -30,12 +37,12 @@ export const Route = createFileRoute("/api/auth/callback/google")({
         const returnedState = requestUrl.searchParams.get("state");
         if (!cookieValue || !returnedState || cookieValue !== returnedState) {
           settingsUrl.searchParams.set("google", "error");
-          return Response.redirect(settingsUrl, 302);
+          return redirectResponse(settingsUrl);
         }
 
         const user = await getSupabaseUser();
         if (!user) {
-          return Response.redirect(new URL("/admin/login", request.url), 302);
+          return redirectResponse(new URL("/admin/login", request.url));
         }
         const supabase = getSupabaseServerClient();
 
@@ -46,7 +53,7 @@ export const Route = createFileRoute("/api/auth/callback/google")({
         if (!code || !clientId || !clientSecret || !redirectUri) {
           console.error("Google OAuth callback is missing required configuration or code.");
           settingsUrl.searchParams.set("google", "error");
-          return Response.redirect(settingsUrl, 302);
+          return redirectResponse(settingsUrl);
         }
 
         try {
@@ -89,7 +96,7 @@ export const Route = createFileRoute("/api/auth/callback/google")({
           settingsUrl.searchParams.set("google", "error");
         }
 
-        return Response.redirect(settingsUrl, 302);
+        return redirectResponse(settingsUrl);
       },
     },
   },
