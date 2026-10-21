@@ -20,7 +20,12 @@ function AdminDashboard() {
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {[
-          { title: "Client relationships", detail: "CRM workspace", icon: Users, to: "/admin" },
+          {
+            title: "Client relationships",
+            detail: "CRM workspace",
+            icon: Users,
+            to: "/admin/enquiries",
+          },
           { title: "Firm content", detail: "CMS workspace", icon: FileText, to: "/admin/content" },
           { title: "Bookings", detail: "Appointments and enquiries", icon: CalendarDays, to: "/admin/bookings" },
         ].map(({ title, detail, icon: Icon, to }) => (
