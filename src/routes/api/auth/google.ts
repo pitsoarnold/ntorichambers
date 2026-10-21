@@ -10,7 +10,11 @@ export const Route = createFileRoute("/api/auth/google")({
           setResponseHeader("Cache-Control", "private, no-store");
           const user = await getSupabaseUser();
           if (!user) {
-            return Response.redirect(new URL("/admin/login", request.url), 302);
+            const loginUrl = new URL("/admin/login", request.url);
+            return new Response(null, {
+              status: 302,
+              headers: { Location: loginUrl.toString() },
+            });
           }
 
           console.log(
@@ -44,7 +48,10 @@ export const Route = createFileRoute("/api/auth/google")({
             state,
           }).toString();
 
-          return Response.redirect(authorizationUrl, 302);
+          return new Response(null, {
+            status: 302,
+            headers: { Location: authorizationUrl.toString() },
+          });
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           console.error("Google OAuth route failed:", error);
